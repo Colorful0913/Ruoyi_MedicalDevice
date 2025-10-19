@@ -122,7 +122,7 @@
       <el-table-column label="领用申请ID" align="center" prop="requisitionId" />
       <el-table-column label="领用单号" align="center" prop="requisitionCode" />
       <el-table-column label="申请科室ID" align="center" prop="deptId" />
-      <el-table-column label="申请器材ID" align="center" prop="deviceId" />
+      <el-table-column label="器械名称" align="center" prop="deviceName" />
       <el-table-column label="申请领用数量" align="center" prop="requisitionQuantity" />
       <el-table-column label="领用状态" align="center" prop="requisitionStatus">
         <template #default="scope">
@@ -141,14 +141,64 @@
           <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
+<!--      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">-->
+<!--        <template #default="scope">-->
+<!--          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['device:requisition:edit']">修改</el-button>-->
+<!--          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['device:requisition:remove']">删除</el-button>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
+
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
-          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['device:requisition:edit']">修改</el-button>
-          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['device:requisition:remove']">删除</el-button>
+<!--          <el-button-->
+<!--              v-if="scope.row.requisitionStatus == '0'"-->
+<!--              size="mini"-->
+<!--              type="text"-->
+<!--              icon="Check"-->
+<!--              @click="handleApprove(scope.row)"-->
+<!--          >批准出库</el-button>-->
+
+<!--          <el-button-->
+<!--              size="mini"-->
+<!--              type="text"-->
+<!--              icon="Close"-->
+<!--              @click="handleReject(scope.row)"-->
+<!--              v-hasPermi="['device:requisition:approve']"-->
+<!--          >驳回</el-button>-->
+
+          <div v-if="scope.row.requisitionStatus == '0'">
+            <el-button
+                size="mini"
+                type="text"
+                icon="Check"
+                @click="handleApprove(scope.row)"
+                v-hasPermi="['device:requisition:approve']"
+            >批准出库</el-button>
+            <el-button
+                size="mini"
+                type="text"
+                icon="Close"
+                @click="handleReject(scope.row)"
+                v-hasPermi="['device:requisition:approve']"
+            >驳回</el-button>
+          </div>
+
+          <el-button
+              size="mini"
+              type="text"
+              icon="Edit"
+              @click="handleUpdate(scope.row)"
+          >修改</el-button>
+          <el-button
+              size="mini"
+              type="text"
+              icon="Delete"
+              @click="handleDelete(scope.row)"
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -163,9 +213,20 @@
         <el-form-item label="申请科室ID" prop="deptId">
           <el-input v-model="form.deptId" placeholder="请输入申请科室ID" />
         </el-form-item>
-        <el-form-item label="申请器材ID" prop="deviceId">
-          <el-input v-model="form.deviceId" placeholder="请输入申请器材ID" />
+<!--        <el-form-item label="申请器材ID" prop="deviceId">-->
+<!--          <el-input v-model="form.deviceId" placeholder="请输入申请器材ID" />-->
+<!--        </el-form-item>-->
+        <el-form-item label="申请器材" prop="deviceId">
+          <el-select v-model="form.deviceId" placeholder="请选择器材" filterable style="width: 100%;">
+            <el-option
+                v-for="item in deviceInfoOptions"
+                :key="item.deviceId"
+                :label="item.deviceName"
+                :value="item.deviceId"
+            ></el-option>
+          </el-select>
         </el-form-item>
+
         <el-form-item label="申请领用数量" prop="requisitionQuantity">
           <el-input v-model="form.requisitionQuantity" placeholder="请输入申请领用数量" />
         </el-form-item>
@@ -184,7 +245,8 @@
 </template>
 
 <script setup name="Requisition">
-import { listRequisition, getRequisition, delRequisition, addRequisition, updateRequisition } from "@/api/device/requisition"
+import { listRequisition, getRequisition, delRequisition, addRequisition, updateRequisition, approveRequisition, rejectRequisition } from "@/api/device/requisition";
+import { listInfo } from "@/api/device/info";
 
 const { proxy } = getCurrentInstance()
 const { sys_requisition_status } = proxy.useDict('sys_requisition_status')
@@ -213,6 +275,7 @@ const data = reactive({
     handleTime: null,
     createBy: null,
     createTime: null,
+    deviceInfoOptions: []
   },
   rules: {
     deptId: [
@@ -227,7 +290,7 @@ const data = reactive({
   }
 })
 
-const { queryParams, form, rules } = toRefs(data)
+const { queryParams, form, rules, deviceInfoOptions } = toRefs(data)
 
 /** 查询科室领用申请单列表 */
 function getList() {
@@ -267,6 +330,7 @@ function reset() {
     updateBy: null,
     updateTime: null
   }
+  deviceInfoOptions.value = [];
   proxy.resetForm("requisitionRef")
 }
 
@@ -293,19 +357,30 @@ function handleSelectionChange(selection) {
 /** 新增按钮操作 */
 function handleAdd() {
   reset()
+  getInfoListForSelect()
   open.value = true
-  title.value = "添加科室领用申请单"
+  title.value = "添加领用申请"
 }
 
 /** 修改按钮操作 */
 function handleUpdate(row) {
-  reset()
-  const _requisitionId = row.requisitionId || ids.value
+  reset();
+  // 【新增】在打开弹窗前，获取器材列表
+  getInfoListForSelect();
+  const _requisitionId = row.requisitionId || ids.value[0];
   getRequisition(_requisitionId).then(response => {
-    form.value = response.data
-    open.value = true
-    title.value = "修改科室领用申请单"
-  })
+    form.value = response.data;
+    open.value = true;
+    title.value = "修改领用申请";
+  });
+}
+
+/** 【新增】定义一个获取器材列表的函数 */
+function getInfoListForSelect() {
+  // 传入一个很大的pageSize来获取全部数据，或者后端提供一个不分页的接口
+  listInfo({ pageNum: 1, pageSize: 9999 }).then(response => {
+    deviceInfoOptions.value = response.rows;
+  });
 }
 
 /** 提交按钮 */
@@ -338,6 +413,27 @@ function handleDelete(row) {
     getList()
     proxy.$modal.msgSuccess("删除成功")
   }).catch(() => {})
+}
+
+/** 批准出库按钮操作 */
+function handleApprove(row) {
+  proxy.$modal.confirm('确认批准并为单号为"' + row.requisitionCode + '"的申请单执行出库操作吗？').then(function() {
+    return approveRequisition(row.requisitionId);
+  }).then(() => {
+    getList(); // 重新加载列表
+    proxy.$modal.msgSuccess("出库成功");
+  }).catch(() => {});
+}
+
+/** 驳回按钮操作 */
+function handleReject(row) {
+  proxy.$modal.prompt('请输入驳回原因').then(prompt => {
+    const rejectData = { requisitionId: row.requisitionId, remark: prompt.value };
+    return rejectRequisition(rejectData);
+  }).then(() => {
+    getList();
+    proxy.$modal.msgSuccess("操作成功");
+  }).catch(() => {});
 }
 
 /** 导出按钮操作 */

@@ -58,4 +58,8 @@ public interface IRequisitionApplyService
      * @return 结果
      */
     public int deleteRequisitionApplyByRequisitionId(Long requisitionId);
+
+    public int approveAndProcessOutbound(Long requisitionId);
+
+    public int rejectRequisitionApply(Long requisitionId, String remark);
 }

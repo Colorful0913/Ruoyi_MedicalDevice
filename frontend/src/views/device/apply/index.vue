@@ -179,10 +179,46 @@
           <span>{{ parseTime(scope.row.updateTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
+<!--      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">-->
+<!--        <template #default="scope">-->
+<!--          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['device:apply:edit']">修改</el-button>-->
+<!--          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['device:apply:remove']">删除</el-button>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
+
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
-          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['device:apply:edit']">修改</el-button>
-          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['device:apply:remove']">删除</el-button>
+          <div v-if="scope.row.applyStatus == '0'">
+            <el-button
+                size="mini"
+                type="text"
+                icon="Check"
+                @click="handleApprove(scope.row)"
+                v-hasPermi="['device:apply:approve']"
+            >批准</el-button>
+            <el-button
+                size="mini"
+                type="text"
+                icon="Close"
+                @click="handleReject(scope.row)"
+                v-hasPermi="['device:apply:approve']"
+            >驳回</el-button>
+          </div>
+
+          <el-button
+              size="mini"
+              type="text"
+              icon="Edit"
+              @click="handleUpdate(scope.row)"
+              v-hasPermi="['device:apply:edit']"
+          >修改</el-button>
+          <el-button
+              size="mini"
+              type="text"
+              icon="Delete"
+              @click="handleDelete(scope.row)"
+              v-hasPermi="['device:apply:remove']"
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -230,7 +266,8 @@
 </template>
 
 <script setup name="Apply">
-import { listApply, getApply, delApply, addApply, updateApply } from "@/api/device/apply"
+// import { listApply, getApply, delApply, addApply, updateApply } from "@/api/device/apply"
+import { listApply, getApply, delApply, addApply, updateApply, approvePurchaseApply } from "@/api/device/apply";
 
 const { proxy } = getCurrentInstance()
 const { sys_apply_status, sys_procure_status } = proxy.useDict('sys_apply_status', 'sys_procure_status')
@@ -394,6 +431,28 @@ function submitForm() {
   })
 }
 
+/** 批准按钮操作 */
+function handleApprove(row) {
+  const applyData = { applyId: row.applyId, applyStatus: '1' }; // 1 代表已通过
+  proxy.$modal.confirm('确认批准单号为"' + row.applyCode + '"的采购申请吗？').then(function() {
+    return approvePurchaseApply(applyData);
+  }).then(() => {
+    getList();
+    proxy.$modal.msgSuccess("审批成功");
+  }).catch(() => {});
+}
+
+/** 驳回按钮操作 */
+function handleReject(row) {
+  const applyData = { applyId: row.applyId, applyStatus: '2' }; // 2 代表已驳回
+  proxy.$modal.confirm('确认驳回单号为"' + row.applyCode + '"的采购申请吗？').then(function() {
+    return approvePurchaseApply(applyData);
+  }).then(() => {
+    getList();
+    proxy.$modal.msgSuccess("操作成功");
+  }).catch(() => {});
+}
+
 /** 删除按钮操作 */
 function handleDelete(row) {
   const _applyIds = row.applyId || ids.value
@@ -413,4 +472,7 @@ function handleExport() {
 }
 
 getList()
+
+
+
 </script>

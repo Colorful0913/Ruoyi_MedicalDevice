@@ -148,4 +148,16 @@ public class RequisitionApply extends BaseEntity
             .append("updateTime", getUpdateTime())
             .toString();
     }
+
+    private String deviceName;
+
+    public void setDeviceName(String deviceName)
+    {
+        this.deviceName = deviceName;
+    }
+
+    public String getDeviceName()
+    {
+        return deviceName;
+    }
 }

@@ -62,4 +62,6 @@ public interface IDeviceInfoService
     public int updateTotalStock(Long deviceId, java.math.BigDecimal quantityDelta);
 
 
+
+
 }

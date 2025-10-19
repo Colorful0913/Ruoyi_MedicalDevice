@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.device.mapper.RequisitionApplyMapper">
-    
+
     <resultMap type="RequisitionApply" id="RequisitionApplyResult">
         <result property="requisitionId"    column="requisition_id"    />
         <result property="requisitionCode"    column="requisition_code"    />
@@ -18,29 +18,34 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="deviceName" column="device_name"/>
     </resultMap>
 
     <sql id="selectRequisitionApplyVo">
-        select requisition_id, requisition_code, dept_id, device_id, requisition_quantity, requisition_status, handler_by, handle_time, remark, create_by, create_time, update_by, update_time from tb_requisition_apply
+        -- 【Key Change 2】: Added d.device_name and used table aliases
+        select r.requisition_id, r.requisition_code, r.dept_id, r.device_id, r.requisition_quantity, r.requisition_status, r.handler_by, r.handle_time, r.remark, r.create_by, r.create_time, r.update_by, r.update_time, d.device_name
+        -- 【Key Change 3】: Added LEFT JOIN to associate with tb_device_info
+        from tb_requisition_apply r
+                 left join tb_device_info d on r.device_id = d.device_id
     </sql>
 
     <select id="selectRequisitionApplyList" parameterType="RequisitionApply" resultMap="RequisitionApplyResult">
         <include refid="selectRequisitionApplyVo"/>
-        <where>  
-            <if test="requisitionCode != null  and requisitionCode != ''"> and requisition_code = #{requisitionCode}</if>
-            <if test="deptId != null "> and dept_id = #{deptId}</if>
-            <if test="deviceId != null "> and device_id = #{deviceId}</if>
-            <if test="requisitionStatus != null  and requisitionStatus != ''"> and requisition_status = #{requisitionStatus}</if>
-            <if test="handlerBy != null  and handlerBy != ''"> and handler_by = #{handlerBy}</if>
-            <if test="params.beginHandleTime != null and params.beginHandleTime != '' and params.endHandleTime != null and params.endHandleTime != ''"> and handle_time between #{params.beginHandleTime} and #{params.endHandleTime}</if>
-            <if test="createBy != null  and createBy != ''"> and create_by = #{createBy}</if>
-            <if test="createTime != null "> and create_time = #{createTime}</if>
+        <where>
+            <if test="requisitionCode != null  and requisitionCode != ''"> and r.requisition_code = #{requisitionCode}</if>
+            <if test="deptId != null "> and r.dept_id = #{deptId}</if>
+            <if test="deviceId != null "> and r.device_id = #{deviceId}</if>
+            <if test="requisitionStatus != null  and requisitionStatus != ''"> and r.requisition_status = #{requisitionStatus}</if>
+            <if test="handlerBy != null  and handlerBy != ''"> and r.handler_by = #{handlerBy}</if>
+            <if test="params.beginHandleTime != null and params.beginHandleTime != '' and params.endHandleTime != null and params.endHandleTime != ''"> and r.handle_time between #{params.beginHandleTime} and #{params.endHandleTime}</if>
+            <if test="createBy != null  and createBy != ''"> and r.create_by = #{createBy}</if>
+            <if test="createTime != null "> and r.create_time = #{createTime}</if>
         </where>
     </select>
-    
+
     <select id="selectRequisitionApplyByRequisitionId" parameterType="Long" resultMap="RequisitionApplyResult">
         <include refid="selectRequisitionApplyVo"/>
-        where requisition_id = #{requisitionId}
+        where r.requisition_id = #{requisitionId}
     </select>
 
     <insert id="insertRequisitionApply" parameterType="RequisitionApply" useGeneratedKeys="true" keyProperty="requisitionId">
@@ -58,7 +63,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
             <if test="updateTime != null">update_time,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="requisitionCode != null">#{requisitionCode},</if>
             <if test="deptId != null">#{deptId},</if>
@@ -72,7 +77,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
             <if test="updateTime != null">#{updateTime},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateRequisitionApply" parameterType="RequisitionApply">
@@ -99,7 +104,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteRequisitionApplyByRequisitionIds" parameterType="String">
-        delete from tb_requisition_apply where requisition_id in 
+        delete from tb_requisition_apply where requisition_id in
         <foreach item="requisitionId" collection="array" open="(" separator="," close=")">
             #{requisitionId}
         </foreach>

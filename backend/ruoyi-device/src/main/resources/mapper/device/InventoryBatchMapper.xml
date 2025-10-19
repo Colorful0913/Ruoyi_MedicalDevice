@@ -23,12 +23,23 @@
     </resultMap>
 
     <sql id="selectInventoryBatchVo">
-        -- 【Key Change 2】: Added d.device_name to the select fields and used table aliases
         select b.batch_id, b.device_id, b.batch_num, b.supplier, b.inbound_time, b.expiry_date, b.inbound_quantity, b.current_quantity, b.status, b.remark, b.create_by, b.create_time, b.update_by, b.update_time, d.device_name
-        -- 【Key Change 3】: Added LEFT JOIN to associate with tb_device_info
         from tb_inventory_batch b
                  left join tb_device_info d on b.device_id = d.device_id
     </sql>
+
+<!--    <select id="selectInventoryBatchList" parameterType="InventoryBatch" resultMap="InventoryBatchResult">-->
+<!--        <include refid="selectInventoryBatchVo"/>-->
+<!--        <where>-->
+<!--            <if test="deviceId != null "> and b.device_id = #{deviceId}</if>-->
+<!--            <if test="batchNum != null  and batchNum != ''"> and b.batch_num = #{batchNum}</if>-->
+<!--            <if test="supplier != null  and supplier != ''"> and b.supplier like concat('%', #{supplier}, '%')</if>-->
+<!--            <if test="params.beginInboundTime != null and params.beginInboundTime != '' and params.endInboundTime != null and params.endInboundTime != ''"> and b.inbound_time between #{params.beginInboundTime} and #{params.endInboundTime}</if>-->
+<!--            <if test="params.beginExpiryDate != null and params.beginExpiryDate != '' and params.endExpiryDate != null and params.endExpiryDate != ''"> and b.expiry_date between #{params.beginExpiryDate} and #{params.endExpiryDate}</if>-->
+<!--            <if test="status != null  and status != ''"> and b.status = #{status}</if>-->
+<!--        </where>-->
+<!--        <order-by>b.inbound_time asc</order-by>-->
+<!--    </select>-->
 
     <select id="selectInventoryBatchList" parameterType="InventoryBatch" resultMap="InventoryBatchResult">
         <include refid="selectInventoryBatchVo"/>
@@ -40,11 +51,11 @@
             <if test="params.beginExpiryDate != null and params.beginExpiryDate != '' and params.endExpiryDate != null and params.endExpiryDate != ''"> and b.expiry_date between #{params.beginExpiryDate} and #{params.endExpiryDate}</if>
             <if test="status != null  and status != ''"> and b.status = #{status}</if>
         </where>
+        order by b.inbound_time asc
     </select>
 
     <select id="selectInventoryBatchByBatchId" parameterType="Long" resultMap="InventoryBatchResult">
         <include refid="selectInventoryBatchVo"/>
-        -- 【Key Change 5】: Added table alias 'b.'
         where b.batch_id = #{batchId}
     </select>
 

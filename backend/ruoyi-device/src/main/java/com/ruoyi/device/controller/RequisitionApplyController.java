@@ -101,4 +101,23 @@ public class RequisitionApplyController extends BaseController
     {
         return toAjax(requisitionApplyService.deleteRequisitionApplyByRequisitionIds(requisitionIds));
     }
+
+    /**
+     * 批准并出库领用申请
+     */
+    @PreAuthorize("@ss.hasPermi('device:requisition:approve')") // 【关键】加上与“驳回”相同的权限码
+    @PutMapping("/approve/{requisitionId}")
+    public AjaxResult approve(@PathVariable Long requisitionId)
+    {
+        return toAjax(requisitionApplyService.approveAndProcessOutbound(requisitionId));
+    }
+    /**
+     * 驳回领用申请
+     */
+    @PreAuthorize("@ss.hasPermi('device:requisition:approve')") // 【关键】使用与批准相同的权限码
+    @PutMapping("/reject")
+    public AjaxResult reject(@RequestBody RequisitionApply requisitionApply)
+    {
+        return toAjax(requisitionApplyService.rejectRequisitionApply(requisitionApply.getRequisitionId(), requisitionApply.getRemark()));
+    }
 }

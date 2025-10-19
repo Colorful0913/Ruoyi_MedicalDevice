@@ -101,4 +101,14 @@ public class PurchaseApplyController extends BaseController
     {
         return toAjax(purchaseApplyService.deletePurchaseApplyByApplyIds(applyIds));
     }
+
+    /**
+     * 审批采购申请
+     */
+    @PreAuthorize("@ss.hasPermi('device:apply:approve')") // 【关键】权限控制
+    @PutMapping("/approve")
+    public AjaxResult approve(@RequestBody PurchaseApply purchaseApply)
+    {
+        return toAjax(purchaseApplyService.approvePurchaseApply(purchaseApply));
+    }
 }

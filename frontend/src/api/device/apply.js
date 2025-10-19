@@ -42,3 +42,13 @@ export function delApply(applyId) {
     method: 'delete'
   })
 }
+
+
+// 【新增】审批采购申请
+export function approvePurchaseApply(data) {
+    return request({
+        url: '/device/apply/approve',
+        method: 'put',
+        data: data
+    })
+}

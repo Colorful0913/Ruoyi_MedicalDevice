@@ -110,4 +110,22 @@ public class PurchaseApplyServiceImpl implements IPurchaseApplyService
     {
         return purchaseApplyMapper.deletePurchaseApplyByApplyId(applyId);
     }
+
+    @Override
+    public int approvePurchaseApply(PurchaseApply purchaseApply) {
+        // 1. 从数据库中获取最新的申请单信息
+        PurchaseApply currentApply = purchaseApplyMapper.selectPurchaseApplyByApplyId(purchaseApply.getApplyId());
+
+        // 2. 状态校验，确保只有“待审批”的单据才能被操作
+        if (currentApply == null || !"0".equals(currentApply.getApplyStatus())) {
+            throw new RuntimeException("操作失败，该申请单状态已改变！");
+        }
+
+        // 3. 设置审批人和审批时间
+        purchaseApply.setApproverBy(SecurityUtils.getUsername());
+        purchaseApply.setApproveTime(DateUtils.getNowDate());
+
+        // 4. 调用 update 方法更新数据库
+        return purchaseApplyMapper.updatePurchaseApply(purchaseApply);
+    }
 }

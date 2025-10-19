@@ -58,4 +58,6 @@ public interface IPurchaseApplyService
      * @return 结果
      */
     public int deletePurchaseApplyByApplyId(Long applyId);
+
+    public int approvePurchaseApply(PurchaseApply purchaseApply);
 }
