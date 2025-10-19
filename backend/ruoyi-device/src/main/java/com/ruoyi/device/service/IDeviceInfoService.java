@@ -58,4 +58,8 @@ public interface IDeviceInfoService
      * @return 结果
      */
     public int deleteDeviceInfoByDeviceId(Long deviceId);
+
+    public int updateTotalStock(Long deviceId, java.math.BigDecimal quantityDelta);
+
+
 }

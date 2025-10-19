@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.device.mapper.PurchaseApplyMapper">
+
+    <resultMap type="PurchaseApply" id="PurchaseApplyResult">
+        <result property="applyId"    column="apply_id"    />
+        <result property="applyCode"    column="apply_code"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="deviceId"    column="device_id"    />
+        <result property="requiredQuantity"    column="required_quantity"    />
+        <result property="requiredDate"    column="required_date"    />
+        <result property="applyStatus"    column="apply_status"    />
+        <result property="approverBy"    column="approver_by"    />
+        <result property="approveTime"    column="approve_time"    />
+        <result property="procureStatus"    column="procure_status"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="deviceName" column="device_name"/>
+    </resultMap>
+
+    <sql id="selectPurchaseApplyVo">
+        -- 【关键修改 2】: 在查询字段中增加了 d.device_name
+        select p.apply_id, p.apply_code, p.dept_id, p.device_id, p.required_quantity, p.required_date, p.apply_status, p.approver_by, p.approve_time, p.procure_status, p.remark, p.create_by, p.create_time, p.update_by, p.update_time, d.device_name
+        -- 【关键修改 3】: 给 tb_purchase_apply 起了个别名 p，并使用 LEFT JOIN 关联 tb_device_info 表 (别名 d)
+        from tb_purchase_apply p
+                 left join tb_device_info d on p.device_id = d.device_id
+    </sql>
+
+    <select id="selectPurchaseApplyList" parameterType="PurchaseApply" resultMap="PurchaseApplyResult">
+        <include refid="selectPurchaseApplyVo"/>
+        <where>
+            <if test="applyCode != null  and applyCode != ''"> and p.apply_code = #{applyCode}</if>
+            <if test="deptId != null "> and p.dept_id = #{deptId}</if>
+            <if test="deviceId != null "> and p.device_id = #{deviceId}</if>
+            <if test="params.beginRequiredDate != null and params.beginRequiredDate != '' and params.endRequiredDate != null and params.endRequiredDate != ''"> and p.required_date between #{params.beginRequiredDate} and #{params.endRequiredDate}</if>
+            <if test="applyStatus != null  and applyStatus != ''"> and p.apply_status = #{applyStatus}</if>
+            <if test="approverBy != null  and approverBy != ''"> and p.approver_by = #{approverBy}</if>
+            <if test="params.beginApproveTime != null and params.beginApproveTime != '' and params.endApproveTime != null and params.endApproveTime != ''"> and p.approve_time between #{params.beginApproveTime} and #{params.endApproveTime}</if>
+            <if test="procureStatus != null  and procureStatus != ''"> and p.procure_status = #{procureStatus}</if>
+            <if test="createBy != null  and createBy != ''"> and p.create_by = #{createBy}</if>
+            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''"> and p.create_time between #{params.beginCreateTime} and #{params.endCreateTime}</if>
+        </where>
+    </select>
+
+    <select id="selectPurchaseApplyByApplyId" parameterType="Long" resultMap="PurchaseApplyResult">
+        <include refid="selectPurchaseApplyVo"/>
+        where p.apply_id = #{applyId}
+    </select>
+
+    <insert id="insertPurchaseApply" parameterType="PurchaseApply" useGeneratedKeys="true" keyProperty="applyId">
+        insert into tb_purchase_apply
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="applyCode != null">apply_code,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="deviceId != null">device_id,</if>
+            <if test="requiredQuantity != null">required_quantity,</if>
+            <if test="requiredDate != null">required_date,</if>
+            <if test="applyStatus != null and applyStatus != ''">apply_status,</if>
+            <if test="approverBy != null">approver_by,</if>
+            <if test="approveTime != null">approve_time,</if>
+            <if test="procureStatus != null">procure_status,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="applyCode != null">#{applyCode},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="deviceId != null">#{deviceId},</if>
+            <if test="requiredQuantity != null">#{requiredQuantity},</if>
+            <if test="requiredDate != null">#{requiredDate},</if>
+            <if test="applyStatus != null and applyStatus != ''">#{applyStatus},</if>
+            <if test="approverBy != null">#{approverBy},</if>
+            <if test="approveTime != null">#{approveTime},</if>
+            <if test="procureStatus != null">#{procureStatus},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updatePurchaseApply" parameterType="PurchaseApply">
+        update tb_purchase_apply
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="applyCode != null">apply_code = #{applyCode},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="deviceId != null">device_id = #{deviceId},</if>
+            <if test="requiredQuantity != null">required_quantity = #{requiredQuantity},</if>
+            <if test="requiredDate != null">required_date = #{requiredDate},</if>
+            <if test="applyStatus != null and applyStatus != ''">apply_status = #{applyStatus},</if>
+            <if test="approverBy != null">approver_by = #{approverBy},</if>
+            <if test="approveTime != null">approve_time = #{approveTime},</if>
+            <if test="procureStatus != null">procure_status = #{procureStatus},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where apply_id = #{applyId}
+    </update>
+
+    <delete id="deletePurchaseApplyByApplyId" parameterType="Long">
+        delete from tb_purchase_apply where apply_id = #{applyId}
+    </delete>
+
+    <delete id="deletePurchaseApplyByApplyIds" parameterType="String">
+        delete from tb_purchase_apply where apply_id in
+        <foreach item="applyId" collection="array" open="(" separator="," close=")">
+            #{applyId}
+        </foreach>
+    </delete>
+</mapper>
