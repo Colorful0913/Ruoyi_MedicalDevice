@@ -215,4 +215,26 @@ public class RequisitionApplyServiceImpl implements IRequisitionApplyService
         // 4. 更新数据库
         return requisitionApplyMapper.updateRequisitionApply(requisition);
     }
+
+    /**
+     * 获取待审核申请数量
+     * 
+     * @return 待审核申请数量
+     */
+    @Override
+    public Long getPendingCount()
+    {
+        return requisitionApplyMapper.getPendingCount();
+    }
+
+    /**
+     * 获取本月出库数量
+     * 
+     * @return 本月出库数量
+     */
+    @Override
+    public Long getMonthlyOutboundCount()
+    {
+        return requisitionApplyMapper.getMonthlyOutboundCount();
+    }
 }

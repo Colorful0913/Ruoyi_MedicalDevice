@@ -58,3 +58,19 @@ export function getLowStockDevices() {
     method: 'get'
   })
 }
+
+// 获取器械总数统计
+export function getTotalDevices() {
+  return request({
+    url: '/device/info/statistics/total',
+    method: 'get'
+  })
+}
+
+// 获取库存预警数量
+export function getLowStockCount() {
+  return request({
+    url: '/device/info/statistics/lowStock',
+    method: 'get'
+  })
+}

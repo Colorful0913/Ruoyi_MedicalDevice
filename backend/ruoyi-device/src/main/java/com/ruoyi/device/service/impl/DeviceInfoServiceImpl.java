@@ -133,4 +133,26 @@ public class DeviceInfoServiceImpl implements IDeviceInfoService
     {
         return deviceInfoMapper.selectLowStockDevices();
     }
+
+    /**
+     * 获取器械总数
+     * 
+     * @return 器械总数
+     */
+    @Override
+    public Long getTotalDevices()
+    {
+        return deviceInfoMapper.getTotalDevices();
+    }
+
+    /**
+     * 获取库存预警数量
+     * 
+     * @return 库存预警数量
+     */
+    @Override
+    public Long getLowStockCount()
+    {
+        return deviceInfoMapper.getLowStockCount();
+    }
 }

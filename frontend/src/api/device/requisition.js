@@ -59,3 +59,19 @@ export function rejectRequisition(data) {
         data: data
     })
 }
+
+// 获取待审核申请数量
+export function getPendingCount() {
+  return request({
+    url: '/device/requisition/statistics/pending',
+    method: 'get'
+  })
+}
+
+// 获取本月出库数量
+export function getMonthlyOutboundCount() {
+  return request({
+    url: '/device/requisition/statistics/monthlyOutbound',
+    method: 'get'
+  })
+}

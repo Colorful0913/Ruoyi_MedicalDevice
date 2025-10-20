@@ -10,11 +10,11 @@
           </div>
           <div class="card-content">
             <div class="card-number">{{ statistics.totalDevices }}</div>
-            <div class="card-desc">个器械</div>
+            <div class="card-desc">种器械</div>
           </div>
         </el-card>
       </el-col>
-      
+
       <el-col :span="6">
         <el-card class="box-card">
           <div class="card-header">
@@ -27,7 +27,7 @@
           </div>
         </el-card>
       </el-col>
-      
+
       <el-col :span="6">
         <el-card class="box-card">
           <div class="card-header">
@@ -40,7 +40,7 @@
           </div>
         </el-card>
       </el-col>
-      
+
       <el-col :span="6">
         <el-card class="box-card">
           <div class="card-header">
@@ -78,7 +78,7 @@
           </el-table>
         </el-card>
       </el-col>
-      
+
       <!-- 最近申请 -->
       <el-col :span="12">
         <el-card>
@@ -201,8 +201,8 @@
             <div class="category-item" v-for="item in categoryStats" :key="item.category">
               <div class="category-name">{{ item.category }}</div>
               <div class="category-progress">
-                <el-progress 
-                  :percentage="item.percentage" 
+                <el-progress
+                  :percentage="item.percentage"
                   :color="item.color"
                   :show-text="false"
                 />
@@ -218,8 +218,8 @@
 
 <script setup name="Dashboard">
 import { ref, onMounted } from 'vue'
-import { getLowStockDevices } from '@/api/device/info'
-import { listRequisition } from '@/api/device/requisition'
+import { getLowStockDevices, getTotalDevices, getLowStockCount } from '@/api/device/info'
+import { listRequisition, getPendingCount, getMonthlyOutboundCount } from '@/api/device/requisition'
 import { listApply } from '@/api/device/apply'
 
 const statistics = ref({
@@ -243,11 +243,41 @@ const deptRanking = ref([])
 const deviceRanking = ref([])
 const categoryStats = ref([])
 
+// 获取统计数据
+function getStatistics() {
+  // 获取器械总数
+  getTotalDevices().then(response => {
+    statistics.value.totalDevices = response.data || 0
+  }).catch(error => {
+    console.error('获取器械总数失败:', error)
+  })
+
+  // 获取库存预警数量
+  getLowStockCount().then(response => {
+    statistics.value.lowStockDevices = response.data || 0
+  }).catch(error => {
+    console.error('获取库存预警数量失败:', error)
+  })
+
+  // 获取待审核申请数量
+  getPendingCount().then(response => {
+    statistics.value.pendingRequisitions = response.data || 0
+  }).catch(error => {
+    console.error('获取待审核申请数量失败:', error)
+  })
+
+  // 获取本月出库数量
+  getMonthlyOutboundCount().then(response => {
+    statistics.value.monthlyOutbound = response.data || 0
+  }).catch(error => {
+    console.error('获取本月出库数量失败:', error)
+  })
+}
+
 // 获取库存预警数据
 function getLowStockData() {
   getLowStockDevices().then(response => {
     lowStockList.value = response.data || []
-    statistics.value.lowStockDevices = lowStockList.value.length
   }).catch(error => {
     console.error('获取库存预警数据失败:', error)
   })
@@ -257,7 +287,6 @@ function getLowStockData() {
 function getRecentRequisitions() {
   listRequisition({ pageNum: 1, pageSize: 10 }).then(response => {
     recentRequisitions.value = response.rows || []
-    statistics.value.pendingRequisitions = recentRequisitions.value.filter(item => item.requisitionStatus === '0').length
   }).catch(error => {
     console.error('获取最近申请数据失败:', error)
   })
@@ -362,6 +391,7 @@ function refreshCategoryStats() {
 }
 
 onMounted(() => {
+  getStatistics()
   getLowStockData()
   getRecentRequisitions()
   getPurchaseStats()
@@ -383,7 +413,7 @@ onMounted(() => {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   background: white;
-  
+
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);

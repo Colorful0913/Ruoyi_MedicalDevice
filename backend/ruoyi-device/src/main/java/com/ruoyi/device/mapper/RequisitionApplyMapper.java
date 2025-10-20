@@ -58,4 +58,18 @@ public interface RequisitionApplyMapper
      * @return 结果
      */
     public int deleteRequisitionApplyByRequisitionIds(Long[] requisitionIds);
+
+    /**
+     * 获取待审核申请数量
+     * 
+     * @return 待审核申请数量
+     */
+    public Long getPendingCount();
+
+    /**
+     * 获取本月出库数量
+     * 
+     * @return 本月出库数量
+     */
+    public Long getMonthlyOutboundCount();
 }

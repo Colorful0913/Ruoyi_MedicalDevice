@@ -84,46 +84,46 @@ export const constantRoutes = [
       }
     ]
   },
-  // 设备管理模块路由
-  {
-    path: '/device',
-    component: Layout,
-    redirect: '/device/info',
-    name: 'Device',
-    meta: { title: '设备管理', icon: 'tool' },
-    children: [
-      {
-        path: 'info',
-        component: () => import('@/views/device/info/index'),
-        name: 'DeviceInfo',
-        meta: { title: '设备信息', icon: 'list' }
-      },
-      {
-        path: 'apply',
-        component: () => import('@/views/device/apply/index'),
-        name: 'DeviceApply',
-        meta: { title: '采购申请', icon: 'shopping' }
-      },
-      {
-        path: 'requisition',
-        component: () => import('@/views/device/requisition/index'),
-        name: 'DeviceRequisition',
-        meta: { title: '领用管理', icon: 'takeaway-box' }
-      },
-      {
-        path: 'batch',
-        component: () => import('@/views/device/batch/index'),
-        name: 'DeviceBatch',
-        meta: { title: '批次管理', icon: 'nested' }
-      },
-      {
-        path: 'dashboard',
-        component: () => import('@/views/device/dashboard/index'),
-        name: 'DeviceDashboard',
-        meta: { title: '数据分析', icon: 'chart' }
-      }
-    ]
-  }
+  // // 设备管理模块路由
+  // {
+  //   path: '/device',
+  //   component: Layout,
+  //   redirect: '/device/info',
+  //   name: 'Device',
+  //   meta: { title: '设备管理', icon: 'tool' },
+  //   children: [
+  //     {
+  //       path: 'info',
+  //       component: () => import('@/views/device/info/index'),
+  //       name: 'DeviceInfo',
+  //       meta: { title: '设备信息', icon: 'list' }
+  //     },
+  //     {
+  //       path: 'apply',
+  //       component: () => import('@/views/device/apply/index'),
+  //       name: 'DeviceApply',
+  //       meta: { title: '采购申请', icon: 'shopping' }
+  //     },
+  //     {
+  //       path: 'requisition',
+  //       component: () => import('@/views/device/requisition/index'),
+  //       name: 'DeviceRequisition',
+  //       meta: { title: '领用管理', icon: 'takeaway-box' }
+  //     },
+  //     {
+  //       path: 'batch',
+  //       component: () => import('@/views/device/batch/index'),
+  //       name: 'DeviceBatch',
+  //       meta: { title: '批次管理', icon: 'nested' }
+  //     },
+  //     {
+  //       path: 'dashboard',
+  //       component: () => import('@/views/device/dashboard/index'),
+  //       name: 'DeviceDashboard',
+  //       meta: { title: '数据分析', icon: 'chart' }
+  //     }
+  //   ]
+  // }
 ]
 
 // 动态路由，基于用户权限动态去加载

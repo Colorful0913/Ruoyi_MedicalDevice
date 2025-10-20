@@ -116,4 +116,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where total_stock &lt;= min_stock and status = '0'
         order by (total_stock - min_stock) asc
     </select>
+
+    <!-- 获取器械总数 -->
+    <select id="getTotalDevices" resultType="Long">
+        select count(*) from tb_device_info where status = '0'
+    </select>
+
+    <!-- 获取库存预警数量 -->
+    <select id="getLowStockCount" resultType="Long">
+        select count(*) from tb_device_info 
+        where total_stock &lt;= min_stock and status = '0'
+    </select>
 </mapper>

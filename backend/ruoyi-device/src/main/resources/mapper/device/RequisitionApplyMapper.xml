@@ -109,4 +109,16 @@
             #{requisitionId}
         </foreach>
     </delete>
+
+    <!-- 获取待审核申请数量 -->
+    <select id="getPendingCount" resultType="Long">
+        select count(*) from tb_requisition_apply where requisition_status = '0'
+    </select>
+
+    <!-- 获取本月出库数量 -->
+    <select id="getMonthlyOutboundCount" resultType="Long">
+        select count(*) from tb_requisition_apply 
+        where requisition_status = '1' 
+        and DATE_FORMAT(handle_time, '%Y-%m') = DATE_FORMAT(NOW(), '%Y-%m')
+    </select>
 </mapper>

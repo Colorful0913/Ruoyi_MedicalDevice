@@ -67,4 +67,18 @@ public interface IDeviceInfoService
      * @return 库存预警器械列表
      */
     public List<DeviceInfo> selectLowStockDevices();
+
+    /**
+     * 获取器械总数
+     * 
+     * @return 器械总数
+     */
+    public Long getTotalDevices();
+
+    /**
+     * 获取库存预警数量
+     * 
+     * @return 库存预警数量
+     */
+    public Long getLowStockCount();
 }

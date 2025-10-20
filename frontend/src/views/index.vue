@@ -27,19 +27,19 @@
       </div>
     </div>
 
-    <!-- 功能模块卡片 -->
-    <el-row :gutter="20" class="module-cards">
-      <el-col :xs="24" :sm="12" :md="8" :lg="6">
+
+    <el-row :gutter="20" class="module-cards" justify="center">
+      <el-col :xs="24" :sm="12" :md="8" :lg="4">
         <el-card class="module-card" @click="goToModule('/device/info')">
           <div class="card-icon">
             <i class="el-icon-box"></i>
           </div>
-          <h3>设备管理</h3>
+          <h3>设备信息</h3>
           <p>设备信息录入、查询、维护</p>
         </el-card>
       </el-col>
-      
-      <el-col :xs="24" :sm="12" :md="8" :lg="6">
+
+      <el-col :xs="24" :sm="12" :md="8" :lg="4">
         <el-card class="module-card" @click="goToModule('/device/apply')">
           <div class="card-icon">
             <i class="el-icon-shopping-cart-full"></i>
@@ -48,8 +48,8 @@
           <p>设备采购申请、审批流程</p>
         </el-card>
       </el-col>
-      
-      <el-col :xs="24" :sm="12" :md="8" :lg="6">
+
+      <el-col :xs="24" :sm="12" :md="8" :lg="4">
         <el-card class="module-card" @click="goToModule('/device/requisition')">
           <div class="card-icon">
             <i class="el-icon-takeaway-box"></i>
@@ -58,8 +58,17 @@
           <p>设备领用申请、归还管理</p>
         </el-card>
       </el-col>
-      
-      <el-col :xs="24" :sm="12" :md="8" :lg="6">
+
+      <el-col :xs="24" :sm="12" :md="8" :lg="4">
+        <el-card class="module-card" @click="goToModule('/device/batch')">
+          <div class="card-icon">
+            <i class="el-icon-tickets"></i> </div>
+          <h3>批次管理</h3>
+          <p>批次信息录入、查询、维护</p>
+        </el-card>
+      </el-col>
+
+      <el-col :xs="24" :sm="12" :md="8" :lg="4">
         <el-card class="module-card" @click="goToModule('/device/dashboard')">
           <div class="card-icon">
             <i class="el-icon-data-analysis"></i>
@@ -69,6 +78,58 @@
         </el-card>
       </el-col>
     </el-row>
+<!--    &lt;!&ndash; 功能模块卡片 &ndash;&gt;-->
+<!--    <el-row :gutter="20" class="module-cards">-->
+<!--      <el-col :xs="24" :sm="12" :md="8" :lg="6">-->
+<!--        <el-card class="module-card" @click="goToModule('/device/info')">-->
+<!--          <div class="card-icon">-->
+<!--            <i class="el-icon-box"></i>-->
+<!--          </div>-->
+<!--          <h3>设备信息</h3>-->
+<!--          <p>设备信息录入、查询、维护</p>-->
+<!--        </el-card>-->
+<!--      </el-col>-->
+
+<!--      <el-col :xs="24" :sm="12" :md="8" :lg="6">-->
+<!--        <el-card class="module-card" @click="goToModule('/device/apply')">-->
+<!--          <div class="card-icon">-->
+<!--            <i class="el-icon-shopping-cart-full"></i>-->
+<!--          </div>-->
+<!--          <h3>采购申请</h3>-->
+<!--          <p>设备采购申请、审批流程</p>-->
+<!--        </el-card>-->
+<!--      </el-col>-->
+
+<!--      <el-col :xs="24" :sm="12" :md="8" :lg="6">-->
+<!--        <el-card class="module-card" @click="goToModule('/device/requisition')">-->
+<!--          <div class="card-icon">-->
+<!--            <i class="el-icon-takeaway-box"></i>-->
+<!--          </div>-->
+<!--          <h3>领用管理</h3>-->
+<!--          <p>设备领用申请、归还管理</p>-->
+<!--        </el-card>-->
+<!--      </el-col>-->
+
+<!--      <el-col :xs="24" :sm="12" :md="8" :lg="6">-->
+<!--        <el-card class="module-card" @click="goToModule('device/batch')">-->
+<!--          <div class="card-icon">-->
+<!--            <i class="el-icon-data-analysis"></i>-->
+<!--          </div>-->
+<!--          <h3>批次管理</h3>-->
+<!--          <p>批次信息录入、查询、维护</p>-->
+<!--        </el-card>-->
+<!--      </el-col>-->
+
+<!--      <el-col :xs="24" :sm="12" :md="8" :lg="6">-->
+<!--        <el-card class="module-card" @click="goToModule('/device/dashboard')">-->
+<!--          <div class="card-icon">-->
+<!--            <i class="el-icon-data-analysis"></i>-->
+<!--          </div>-->
+<!--          <h3>数据分析</h3>-->
+<!--          <p>设备使用统计、报表分析</p>-->
+<!--        </el-card>-->
+<!--      </el-col>-->
+<!--    </el-row>-->
 
     <!-- 系统信息 -->
     <el-row :gutter="20" class="info-section">
@@ -87,7 +148,7 @@
           </div>
         </el-card>
       </el-col>
-      
+
       <el-col :xs="24" :sm="24" :md="12" :lg="8">
         <el-card class="info-card">
           <template #header>
@@ -111,7 +172,7 @@
           </div>
         </el-card>
       </el-col>
-      
+
       <el-col :xs="24" :sm="24" :md="12" :lg="8">
         <el-card class="info-card">
           <template #header>
@@ -183,14 +244,14 @@ onMounted(() => {
     padding: 40px 20px;
     margin: -20px -20px 30px -20px;
     border-radius: 8px;
-    
+
     .banner-content {
       display: flex;
       justify-content: space-between;
       align-items: center;
       max-width: 1200px;
       margin: 0 auto;
-      
+
       .banner-text {
         .system-title {
           font-size: 2.5rem;
@@ -199,34 +260,34 @@ onMounted(() => {
           display: flex;
           align-items: center;
           gap: 15px;
-          
+
           i {
             font-size: 3rem;
             color: #ffd700;
           }
         }
-        
+
         .system-subtitle {
           font-size: 1.2rem;
           opacity: 0.9;
           margin: 0;
         }
       }
-      
+
       .banner-stats {
         display: flex;
         gap: 30px;
-        
+
         .stat-item {
           text-align: center;
-          
+
           .stat-number {
             font-size: 2.5rem;
             font-weight: bold;
             color: #ffd700;
             margin-bottom: 5px;
           }
-          
+
           .stat-label {
             font-size: 0.9rem;
             opacity: 0.8;
@@ -235,10 +296,10 @@ onMounted(() => {
       }
     }
   }
-  
+
   .module-cards {
     margin-bottom: 30px;
-    
+
     .module-card {
       cursor: pointer;
       transition: all 0.3s ease;
@@ -250,28 +311,28 @@ onMounted(() => {
       display: flex;
       flex-direction: column;
       justify-content: center;
-      
+
       &:hover {
         transform: translateY(-5px);
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         border-color: #409eff;
       }
-      
+
       .card-icon {
         margin-bottom: 20px;
-        
+
         i {
           font-size: 3rem;
           color: #409eff;
         }
       }
-      
+
       h3 {
         margin: 0 0 10px 0;
         font-size: 1.3rem;
         color: #303133;
       }
-      
+
       p {
         margin: 0;
         color: #606266;
@@ -279,55 +340,55 @@ onMounted(() => {
       }
     }
   }
-  
+
   .info-section {
     .info-card {
       height: 100%;
-      
+
       .card-header {
         font-weight: 600;
         color: #303133;
       }
-      
+
       .info-content {
         p {
           margin: 15px 0;
           display: flex;
           align-items: center;
           gap: 10px;
-          
+
           i {
             color: #409eff;
             font-size: 1.1rem;
           }
         }
       }
-      
+
       .quick-actions {
         display: flex;
         flex-direction: column;
         gap: 10px;
-        
+
         .el-button {
           width: 100%;
           justify-content: flex-start;
         }
       }
-      
+
       .notice-content {
         .el-timeline {
           padding-left: 0;
-          
+
           .el-timeline-item {
             .el-card {
               margin: 0;
-              
+
               h4 {
                 margin: 0 0 10px 0;
                 color: #303133;
                 font-size: 1rem;
               }
-              
+
               p {
                 margin: 0;
                 color: #606266;
@@ -339,7 +400,7 @@ onMounted(() => {
       }
     }
   }
-  
+
   // 响应式设计
   @media (max-width: 768px) {
     .welcome-banner {
@@ -347,13 +408,13 @@ onMounted(() => {
         flex-direction: column;
         text-align: center;
         gap: 20px;
-        
+
         .banner-stats {
           justify-content: center;
         }
       }
     }
-    
+
     .module-cards {
       .module-card {
         height: auto;

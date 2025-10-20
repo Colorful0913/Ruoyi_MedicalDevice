@@ -120,4 +120,26 @@ public class RequisitionApplyController extends BaseController
     {
         return toAjax(requisitionApplyService.rejectRequisitionApply(requisitionApply.getRequisitionId(), requisitionApply.getRemark()));
     }
+
+    /**
+     * 获取待审核申请数量
+     */
+    @PreAuthorize("@ss.hasPermi('device:requisition:list')")
+    @GetMapping("/statistics/pending")
+    public AjaxResult getPendingCount()
+    {
+        Long count = requisitionApplyService.getPendingCount();
+        return success(count);
+    }
+
+    /**
+     * 获取本月出库数量
+     */
+    @PreAuthorize("@ss.hasPermi('device:requisition:list')")
+    @GetMapping("/statistics/monthlyOutbound")
+    public AjaxResult getMonthlyOutboundCount()
+    {
+        Long count = requisitionApplyService.getMonthlyOutboundCount();
+        return success(count);
+    }
 }

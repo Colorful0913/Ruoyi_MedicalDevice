@@ -123,4 +123,26 @@ public class DeviceInfoController extends BaseController
         List<DeviceInfo> list = deviceInfoService.selectLowStockDevices();
         return success(list);
     }
+
+    /**
+     * 获取器械总数统计
+     */
+    @PreAuthorize("@ss.hasPermi('device:info:list')")
+    @GetMapping("/statistics/total")
+    public AjaxResult getTotalDevices()
+    {
+        Long total = deviceInfoService.getTotalDevices();
+        return success(total);
+    }
+
+    /**
+     * 获取库存预警数量
+     */
+    @PreAuthorize("@ss.hasPermi('device:info:list')")
+    @GetMapping("/statistics/lowStock")
+    public AjaxResult getLowStockCount()
+    {
+        Long count = deviceInfoService.getLowStockCount();
+        return success(count);
+    }
 }
