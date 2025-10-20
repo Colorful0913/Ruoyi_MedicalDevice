@@ -122,4 +122,15 @@ public class DeviceInfoServiceImpl implements IDeviceInfoService
         // 如果找不到器材，返回0，表示没有更新任何记录
         return 0;
     }
+
+    /**
+     * 查询库存预警器械列表
+     * 
+     * @return 库存预警器械列表
+     */
+    @Override
+    public List<DeviceInfo> selectLowStockDevices()
+    {
+        return deviceInfoMapper.selectLowStockDevices();
+    }
 }

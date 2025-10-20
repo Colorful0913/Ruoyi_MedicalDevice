@@ -234,11 +234,25 @@
     <!-- 添加或修改采购申请对话框 -->
     <el-dialog :title="title" v-model="open" width="500px" append-to-body>
       <el-form ref="applyRef" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="申请科室ID" prop="deptId">
-          <el-input v-model="form.deptId" placeholder="请输入申请科室ID" />
+        <el-form-item label="申请科室" prop="deptId">
+          <el-select v-model="form.deptId" placeholder="请选择申请科室" filterable style="width: 100%;">
+            <el-option
+              v-for="dept in deptOptions"
+              :key="dept.deptId"
+              :label="dept.deptName"
+              :value="dept.deptId"
+            />
+          </el-select>
         </el-form-item>
-        <el-form-item label="关联器械ID" prop="deviceId">
-          <el-input v-model="form.deviceId" placeholder="请输入关联器械ID" />
+        <el-form-item label="申请器械" prop="deviceId">
+          <el-select v-model="form.deviceId" placeholder="请选择器械" filterable style="width: 100%;">
+            <el-option
+                v-for="item in deviceInfoOptions"
+                :key="item.deviceId"
+                :label="item.deviceName"
+                :value="item.deviceId"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="申请采购数量" prop="requiredQuantity">
           <el-input v-model="form.requiredQuantity" placeholder="请输入申请采购数量" />
@@ -268,6 +282,8 @@
 <script setup name="Apply">
 // import { listApply, getApply, delApply, addApply, updateApply } from "@/api/device/apply"
 import { listApply, getApply, delApply, addApply, updateApply, approvePurchaseApply } from "@/api/device/apply";
+import { listInfo, getAllDeviceInfo } from "@/api/device/info";
+import { listDept } from "@/api/system/dept";
 
 const { proxy } = getCurrentInstance()
 const { sys_apply_status, sys_procure_status } = proxy.useDict('sys_apply_status', 'sys_procure_status')
@@ -318,6 +334,11 @@ const data = reactive({
 })
 
 const { queryParams, form, rules } = toRefs(data)
+
+// 器材选项列表
+const deviceInfoOptions = ref([])
+// 科室选项列表
+const deptOptions = ref([])
 
 /** 查询采购申请列表 */
 function getList() {
@@ -471,7 +492,27 @@ function handleExport() {
   }, `apply_${new Date().getTime()}.xlsx`)
 }
 
+// 获取器材选项
+function getDeviceOptions() {
+  getAllDeviceInfo().then(response => {
+    deviceInfoOptions.value = response.data || []
+  }).catch(error => {
+    console.error('获取器材选项失败:', error)
+  })
+}
+
+// 获取科室选项
+function getDeptOptions() {
+  listDept().then(response => {
+    deptOptions.value = response.data || []
+  }).catch(error => {
+    console.error('获取科室选项失败:', error)
+  })
+}
+
 getList()
+getDeviceOptions()
+getDeptOptions()
 
 
 

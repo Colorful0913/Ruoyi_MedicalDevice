@@ -42,3 +42,19 @@ export function delInfo(deviceId) {
     method: 'delete'
   })
 }
+
+// 获取所有器械档案列表（不分页，用于下拉选择）
+export function getAllDeviceInfo() {
+  return request({
+    url: '/device/info/all',
+    method: 'get'
+  })
+}
+
+// 获取库存预警器械列表
+export function getLowStockDevices() {
+  return request({
+    url: '/device/info/lowStock',
+    method: 'get'
+  })
+}

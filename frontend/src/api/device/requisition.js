@@ -36,15 +36,10 @@ export function updateRequisition(data) {
 }
 
 // 删除科室领用申请单
-/**
- * 删除设备请求数据的函数
- * @param {string|number} requisitionId - 需要删除的请求数据的ID
- * @returns {Promise} 返回一个Promise对象，包含请求的结果
- */
 export function delRequisition(requisitionId) {
   return request({
-    url: '/device/requisition/' + requisitionId, // 请求的URL路径，拼接请求数据ID
-    method: 'delete' // 请求方法为DELETE，用于删除资源
+    url: '/device/requisition/' + requisitionId,
+    method: 'delete'
   })
 }
 

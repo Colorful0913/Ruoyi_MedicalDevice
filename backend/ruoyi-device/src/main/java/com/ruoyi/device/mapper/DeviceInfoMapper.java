@@ -58,4 +58,11 @@ public interface DeviceInfoMapper
      * @return 结果
      */
     public int deleteDeviceInfoByDeviceIds(Long[] deviceIds);
+
+    /**
+     * 查询库存预警器械列表
+     * 
+     * @return 库存预警器械列表
+     */
+    public List<DeviceInfo> selectLowStockDevices();
 }

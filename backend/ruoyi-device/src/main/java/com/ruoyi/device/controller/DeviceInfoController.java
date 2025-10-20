@@ -101,4 +101,26 @@ public class DeviceInfoController extends BaseController
     {
         return toAjax(deviceInfoService.deleteDeviceInfoByDeviceIds(deviceIds));
     }
+
+    /**
+     * 获取所有器械档案列表（不分页，用于下拉选择）
+     */
+    @PreAuthorize("@ss.hasPermi('device:info:list')")
+    @GetMapping("/all")
+    public AjaxResult getAllDeviceInfo()
+    {
+        List<DeviceInfo> list = deviceInfoService.selectDeviceInfoList(new DeviceInfo());
+        return success(list);
+    }
+
+    /**
+     * 获取库存预警列表
+     */
+    @PreAuthorize("@ss.hasPermi('device:info:list')")
+    @GetMapping("/lowStock")
+    public AjaxResult getLowStockDevices()
+    {
+        List<DeviceInfo> list = deviceInfoService.selectLowStockDevices();
+        return success(list);
+    }
 }

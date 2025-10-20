@@ -9,21 +9,25 @@
           @keyup.enter="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="申请科室ID" prop="deptId">
-        <el-input
-          v-model="queryParams.deptId"
-          placeholder="请输入申请科室ID"
-          clearable
-          @keyup.enter="handleQuery"
-        />
+      <el-form-item label="申请科室" prop="deptId">
+        <el-select v-model="queryParams.deptId" placeholder="请选择申请科室" clearable filterable style="width: 200px;">
+          <el-option
+            v-for="dept in deptOptions"
+            :key="dept.deptId"
+            :label="dept.deptName"
+            :value="dept.deptId"
+          />
+        </el-select>
       </el-form-item>
-      <el-form-item label="申请器材ID" prop="deviceId">
-        <el-input
-          v-model="queryParams.deviceId"
-          placeholder="请输入申请器材ID"
-          clearable
-          @keyup.enter="handleQuery"
-        />
+      <el-form-item label="申请器材" prop="deviceId">
+        <el-select v-model="queryParams.deviceId" placeholder="请选择申请器材" clearable filterable style="width: 200px;">
+          <el-option
+            v-for="item in deviceInfoOptions"
+            :key="item.deviceId"
+            :label="item.deviceName"
+            :value="item.deviceId"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="领用状态" prop="requisitionStatus">
         <el-select v-model="queryParams.requisitionStatus" placeholder="请选择领用状态" clearable>
@@ -107,6 +111,16 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
+          type="success"
+          plain
+          icon="Check"
+          :disabled="multiple"
+          @click="handleBatchApprove"
+          v-hasPermi="['device:requisition:approve']"
+        >批量批准</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
           type="warning"
           plain
           icon="Download"
@@ -121,8 +135,9 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="领用申请ID" align="center" prop="requisitionId" />
       <el-table-column label="领用单号" align="center" prop="requisitionCode" />
-      <el-table-column label="申请科室ID" align="center" prop="deptId" />
+      <el-table-column label="申请科室" align="center" prop="deptName" />
       <el-table-column label="器械名称" align="center" prop="deviceName" />
+      <el-table-column label="器械编码" align="center" prop="deviceCode" />
       <el-table-column label="申请领用数量" align="center" prop="requisitionQuantity" />
       <el-table-column label="领用状态" align="center" prop="requisitionStatus">
         <template #default="scope">
@@ -188,12 +203,14 @@
               type="text"
               icon="Edit"
               @click="handleUpdate(scope.row)"
+              v-hasPermi="['device:requisition:edit']"
           >修改</el-button>
           <el-button
               size="mini"
               type="text"
               icon="Delete"
               @click="handleDelete(scope.row)"
+              v-hasPermi="['device:requisition:remove']"
           >删除</el-button>
         </template>
       </el-table-column>
@@ -210,8 +227,15 @@
     <!-- 添加或修改科室领用申请单对话框 -->
     <el-dialog :title="title" v-model="open" width="500px" append-to-body>
       <el-form ref="requisitionRef" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="申请科室ID" prop="deptId">
-          <el-input v-model="form.deptId" placeholder="请输入申请科室ID" />
+        <el-form-item label="申请科室" prop="deptId">
+          <el-select v-model="form.deptId" placeholder="请选择申请科室" filterable style="width: 100%;">
+            <el-option
+              v-for="dept in deptOptions"
+              :key="dept.deptId"
+              :label="dept.deptName"
+              :value="dept.deptId"
+            />
+          </el-select>
         </el-form-item>
 <!--        <el-form-item label="申请器材ID" prop="deviceId">-->
 <!--          <el-input v-model="form.deviceId" placeholder="请输入申请器材ID" />-->
@@ -246,7 +270,8 @@
 
 <script setup name="Requisition">
 import { listRequisition, getRequisition, delRequisition, addRequisition, updateRequisition, approveRequisition, rejectRequisition } from "@/api/device/requisition";
-import { listInfo } from "@/api/device/info";
+import { listInfo, getAllDeviceInfo } from "@/api/device/info";
+import { listDept } from "@/api/system/dept";
 
 const { proxy } = getCurrentInstance()
 const { sys_requisition_status } = proxy.useDict('sys_requisition_status')
@@ -274,23 +299,28 @@ const data = reactive({
     handlerBy: null,
     handleTime: null,
     createBy: null,
-    createTime: null,
-    deviceInfoOptions: []
+    createTime: null
   },
   rules: {
     deptId: [
-      { required: true, message: "申请科室ID不能为空", trigger: "blur" }
+      { required: true, message: "请选择申请科室", trigger: "change" }
     ],
     deviceId: [
-      { required: true, message: "申请器材ID不能为空", trigger: "blur" }
+      { required: true, message: "请选择申请器材", trigger: "change" }
     ],
     requisitionQuantity: [
-      { required: true, message: "申请领用数量不能为空", trigger: "blur" }
+      { required: true, message: "申请领用数量不能为空", trigger: "blur" },
+      { type: 'number', min: 1, message: "申请数量必须大于0", trigger: "blur" }
     ],
   }
 })
 
-const { queryParams, form, rules, deviceInfoOptions } = toRefs(data)
+const { queryParams, form, rules } = toRefs(data)
+
+// 器材选项列表 - 独立定义
+const deviceInfoOptions = ref([])
+// 科室选项列表
+const deptOptions = ref([])
 
 /** 查询科室领用申请单列表 */
 function getList() {
@@ -330,7 +360,8 @@ function reset() {
     updateBy: null,
     updateTime: null
   }
-  deviceInfoOptions.value = [];
+  // 不要清空器材列表，保持已加载的数据
+  // deviceInfoOptions.value = [];
   proxy.resetForm("requisitionRef")
 }
 
@@ -358,15 +389,18 @@ function handleSelectionChange(selection) {
 function handleAdd() {
   reset()
   getInfoListForSelect()
+  getDeptListForSelect()
   open.value = true
   title.value = "添加领用申请"
+  console.log('新增按钮被点击，弹窗状态:', open.value)
 }
 
 /** 修改按钮操作 */
 function handleUpdate(row) {
   reset();
-  // 【新增】在打开弹窗前，获取器材列表
+  // 【新增】在打开弹窗前，获取器材列表和科室列表
   getInfoListForSelect();
+  getDeptListForSelect();
   const _requisitionId = row.requisitionId || ids.value[0];
   getRequisition(_requisitionId).then(response => {
     form.value = response.data;
@@ -377,9 +411,42 @@ function handleUpdate(row) {
 
 /** 【新增】定义一个获取器材列表的函数 */
 function getInfoListForSelect() {
-  // 传入一个很大的pageSize来获取全部数据，或者后端提供一个不分页的接口
-  listInfo({ pageNum: 1, pageSize: 9999 }).then(response => {
-    deviceInfoOptions.value = response.rows;
+  console.log('开始获取器材列表...');
+  // 使用新的不分页接口获取所有器材数据
+  getAllDeviceInfo().then(response => {
+    console.log('器材列表响应:', response);
+    if (response && response.data) {
+      deviceInfoOptions.value = response.data;
+      console.log('器材列表加载成功，共', response.data.length, '条数据');
+    } else {
+      console.warn('器材列表响应格式异常:', response);
+      deviceInfoOptions.value = [];
+    }
+  }).catch(error => {
+    console.error('获取器材列表失败:', error);
+    console.error('错误详情:', error.response || error.message);
+    proxy.$modal.msgError('获取器材列表失败: ' + (error.response?.data?.msg || error.message || '未知错误'));
+    deviceInfoOptions.value = [];
+  });
+}
+
+/** 【新增】定义一个获取科室列表的函数 */
+function getDeptListForSelect() {
+  console.log('开始获取科室列表...');
+  listDept().then(response => {
+    console.log('科室列表响应:', response);
+    if (response && response.data) {
+      deptOptions.value = response.data;
+      console.log('科室列表加载成功，共', response.data.length, '个科室');
+    } else {
+      console.warn('科室列表响应格式异常:', response);
+      deptOptions.value = [];
+    }
+  }).catch(error => {
+    console.error('获取科室列表失败:', error);
+    console.error('错误详情:', error.response || error.message);
+    proxy.$modal.msgError('获取科室列表失败: ' + (error.response?.data?.msg || error.message || '未知错误'));
+    deptOptions.value = [];
   });
 }
 
@@ -392,12 +459,18 @@ function submitForm() {
           proxy.$modal.msgSuccess("修改成功")
           open.value = false
           getList()
+        }).catch(error => {
+          console.error('修改失败:', error);
+          proxy.$modal.msgError('修改失败: ' + (error.message || '未知错误'));
         })
       } else {
         addRequisition(form.value).then(response => {
           proxy.$modal.msgSuccess("新增成功")
           open.value = false
           getList()
+        }).catch(error => {
+          console.error('新增失败:', error);
+          proxy.$modal.msgError('新增失败: ' + (error.message || '未知错误'));
         })
       }
     }
@@ -408,7 +481,12 @@ function submitForm() {
 function handleDelete(row) {
   const _requisitionIds = row.requisitionId || ids.value
   proxy.$modal.confirm('是否确认删除科室领用申请单编号为"' + _requisitionIds + '"的数据项？').then(function() {
-    return delRequisition(_requisitionIds)
+    // 如果是单个删除，直接传递ID；如果是批量删除，传递数组
+    if (Array.isArray(_requisitionIds)) {
+      return delRequisition(_requisitionIds.join(','))
+    } else {
+      return delRequisition(_requisitionIds)
+    }
   }).then(() => {
     getList()
     proxy.$modal.msgSuccess("删除成功")
@@ -436,6 +514,35 @@ function handleReject(row) {
   }).catch(() => {});
 }
 
+/** 批量批准按钮操作 */
+function handleBatchApprove() {
+  if (ids.value.length === 0) {
+    proxy.$modal.msgWarning('请选择要批准的申请');
+    return;
+  }
+  
+  // 过滤出待审核状态的申请
+  const pendingIds = requisitionList.value
+    .filter(item => ids.value.includes(item.requisitionId) && item.requisitionStatus === '0')
+    .map(item => item.requisitionId);
+    
+  if (pendingIds.length === 0) {
+    proxy.$modal.msgWarning('所选申请中没有待审核状态的申请');
+    return;
+  }
+  
+  proxy.$modal.confirm(`确认批量批准 ${pendingIds.length} 个领用申请吗？`).then(() => {
+    const promises = pendingIds.map(id => approveRequisition(id));
+    Promise.all(promises).then(() => {
+      proxy.$modal.msgSuccess('批量批准成功');
+      getList();
+    }).catch(error => {
+      console.error('批量批准失败:', error);
+      proxy.$modal.msgError('批量批准失败');
+    });
+  }).catch(() => {});
+}
+
 /** 导出按钮操作 */
 function handleExport() {
   proxy.download('device/requisition/export', {
@@ -444,4 +551,7 @@ function handleExport() {
 }
 
 getList()
+// 页面初始化时加载器材列表和科室列表
+getInfoListForSelect()
+getDeptListForSelect()
 </script>

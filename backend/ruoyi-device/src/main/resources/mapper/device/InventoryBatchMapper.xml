@@ -41,6 +41,19 @@
 <!--        <order-by>b.inbound_time asc</order-by>-->
 <!--    </select>-->
 
+<!--    <select id="selectInventoryBatchList" parameterType="InventoryBatch" resultMap="InventoryBatchResult">-->
+<!--        <include refid="selectInventoryBatchVo"/>-->
+<!--        <where>-->
+<!--            <if test="deviceId != null "> and b.device_id = #{deviceId}</if>-->
+<!--            <if test="batchNum != null  and batchNum != ''"> and b.batch_num = #{batchNum}</if>-->
+<!--            <if test="supplier != null  and supplier != ''"> and b.supplier like concat('%', #{supplier}, '%')</if>-->
+<!--            <if test="params.beginInboundTime != null and params.beginInboundTime != '' and params.endInboundTime != null and params.endInboundTime != ''"> and b.inbound_time between #{params.beginInboundTime} and #{params.endInboundTime}</if>-->
+<!--            <if test="params.beginExpiryDate != null and params.beginExpiryDate != '' and params.endExpiryDate != null and params.endExpiryDate != ''"> and b.expiry_date between #{params.beginExpiryDate} and #{params.endExpiryDate}</if>-->
+<!--            <if test="status != null  and status != ''"> and b.status = #{status}</if>-->
+<!--        </where>-->
+<!--        order by b.inbound_time asc-->
+<!--    </select>-->
+
     <select id="selectInventoryBatchList" parameterType="InventoryBatch" resultMap="InventoryBatchResult">
         <include refid="selectInventoryBatchVo"/>
         <where>

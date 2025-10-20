@@ -2,11 +2,11 @@
   <div class="sidebar-logo-container" :class="{ 'collapse': collapse }">
     <transition name="sidebarLogoFade">
       <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo" />
-        <h1 v-else class="sidebar-title">{{ title }}</h1>
+        <i class="el-icon-medicine-box sidebar-icon"></i>
+        <h1 v-if="!collapse" class="sidebar-title">{{ title }}</h1>
       </router-link>
       <router-link v-else key="expand" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo" />
+        <i class="el-icon-medicine-box sidebar-icon"></i>
         <h1 class="sidebar-title">{{ title }}</h1>
       </router-link>
     </transition>
@@ -25,7 +25,7 @@ defineProps({
   }
 })
 
-const title = import.meta.env.VITE_APP_TITLE
+const title = "医疗器械管理系统"
 const settingsStore = useSettingsStore()
 const sideTheme = computed(() => settingsStore.sideTheme)
 
@@ -72,6 +72,13 @@ const getLogoTextColor = computed(() => {
     & .sidebar-logo {
       width: 32px;
       height: 32px;
+      vertical-align: middle;
+      margin-right: 12px;
+    }
+
+    & .sidebar-icon {
+      font-size: 24px;
+      color: #67c23a;
       vertical-align: middle;
       margin-right: 12px;
     }

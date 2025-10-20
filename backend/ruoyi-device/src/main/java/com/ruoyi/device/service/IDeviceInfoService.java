@@ -61,7 +61,10 @@ public interface IDeviceInfoService
 
     public int updateTotalStock(Long deviceId, java.math.BigDecimal quantityDelta);
 
-
-
-
+    /**
+     * 查询库存预警器械列表
+     * 
+     * @return 库存预警器械列表
+     */
+    public List<DeviceInfo> selectLowStockDevices();
 }

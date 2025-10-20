@@ -103,7 +103,7 @@
         delete from tb_requisition_apply where requisition_id = #{requisitionId}
     </delete>
 
-    <delete id="deleteRequisitionApplyByRequisitionIds" parameterType="String">
+    <delete id="deleteRequisitionApplyByRequisitionIds" parameterType="Long">
         delete from tb_requisition_apply where requisition_id in
         <foreach item="requisitionId" collection="array" open="(" separator="," close=")">
             #{requisitionId}
