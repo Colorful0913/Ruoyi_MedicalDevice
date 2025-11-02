@@ -68,59 +68,7 @@
         </el-card>
       </el-col>
 
-      <el-col :xs="24" :sm="12" :md="8" :lg="4">
-        <el-card class="module-card" @click="goToModule('/device/dashboard')">
-          <div class="card-icon">
-            <i class="el-icon-data-analysis"></i>
-          </div>
-          <h3>数据分析</h3>
-          <p>设备使用统计、报表分析</p>
-        </el-card>
-      </el-col>
-    </el-row>
-<!--    &lt;!&ndash; 功能模块卡片 &ndash;&gt;-->
-<!--    <el-row :gutter="20" class="module-cards">-->
-<!--      <el-col :xs="24" :sm="12" :md="8" :lg="6">-->
-<!--        <el-card class="module-card" @click="goToModule('/device/info')">-->
-<!--          <div class="card-icon">-->
-<!--            <i class="el-icon-box"></i>-->
-<!--          </div>-->
-<!--          <h3>设备信息</h3>-->
-<!--          <p>设备信息录入、查询、维护</p>-->
-<!--        </el-card>-->
-<!--      </el-col>-->
-
-<!--      <el-col :xs="24" :sm="12" :md="8" :lg="6">-->
-<!--        <el-card class="module-card" @click="goToModule('/device/apply')">-->
-<!--          <div class="card-icon">-->
-<!--            <i class="el-icon-shopping-cart-full"></i>-->
-<!--          </div>-->
-<!--          <h3>采购申请</h3>-->
-<!--          <p>设备采购申请、审批流程</p>-->
-<!--        </el-card>-->
-<!--      </el-col>-->
-
-<!--      <el-col :xs="24" :sm="12" :md="8" :lg="6">-->
-<!--        <el-card class="module-card" @click="goToModule('/device/requisition')">-->
-<!--          <div class="card-icon">-->
-<!--            <i class="el-icon-takeaway-box"></i>-->
-<!--          </div>-->
-<!--          <h3>领用管理</h3>-->
-<!--          <p>设备领用申请、归还管理</p>-->
-<!--        </el-card>-->
-<!--      </el-col>-->
-
-<!--      <el-col :xs="24" :sm="12" :md="8" :lg="6">-->
-<!--        <el-card class="module-card" @click="goToModule('device/batch')">-->
-<!--          <div class="card-icon">-->
-<!--            <i class="el-icon-data-analysis"></i>-->
-<!--          </div>-->
-<!--          <h3>批次管理</h3>-->
-<!--          <p>批次信息录入、查询、维护</p>-->
-<!--        </el-card>-->
-<!--      </el-col>-->
-
-<!--      <el-col :xs="24" :sm="12" :md="8" :lg="6">-->
+<!--      <el-col :xs="24" :sm="12" :md="8" :lg="4">-->
 <!--        <el-card class="module-card" @click="goToModule('/device/dashboard')">-->
 <!--          <div class="card-icon">-->
 <!--            <i class="el-icon-data-analysis"></i>-->
@@ -129,11 +77,12 @@
 <!--          <p>设备使用统计、报表分析</p>-->
 <!--        </el-card>-->
 <!--      </el-col>-->
-<!--    </el-row>-->
+    </el-row>
+
 
     <!-- 系统信息 -->
     <el-row :gutter="20" class="info-section">
-      <el-col :xs="24" :sm="24" :md="12" :lg="8">
+      <el-col :xs="24" :sm="24" :md="12" :lg="12">
         <el-card class="info-card">
           <template #header>
             <div class="card-header">
@@ -149,31 +98,31 @@
         </el-card>
       </el-col>
 
-      <el-col :xs="24" :sm="24" :md="12" :lg="8">
-        <el-card class="info-card">
-          <template #header>
-            <div class="card-header">
-              <span>快速操作</span>
-            </div>
-          </template>
-          <div class="quick-actions">
-            <el-button type="primary" icon="el-icon-plus" @click="goToModule('/device/info')">
-              新增设备
-            </el-button>
-            <el-button type="success" icon="el-icon-shopping-cart-full" @click="goToModule('/device/apply')">
-              采购申请
-            </el-button>
-            <el-button type="warning" icon="el-icon-takeaway-box" @click="goToModule('/device/requisition')">
-              设备领用
-            </el-button>
-            <el-button type="info" icon="el-icon-data-analysis" @click="goToModule('/device/dashboard')">
-              查看报表
-            </el-button>
-          </div>
-        </el-card>
-      </el-col>
+<!--      <el-col :xs="24" :sm="24" :md="12" :lg="8">-->
+<!--        <el-card class="info-card">-->
+<!--          <template #header>-->
+<!--            <div class="card-header">-->
+<!--              <span>快速操作</span>-->
+<!--            </div>-->
+<!--          </template>-->
+<!--          <div class="quick-actions">-->
+<!--            <el-button type="primary" icon="el-icon-plus" @click="goToModule('/device/info')">-->
+<!--              新增设备-->
+<!--            </el-button>-->
+<!--            <el-button type="success" icon="el-icon-shopping-cart-full" @click="goToModule('/device/apply')">-->
+<!--              采购申请-->
+<!--            </el-button>-->
+<!--            <el-button type="warning" icon="el-icon-takeaway-box" @click="goToModule('/device/requisition')">-->
+<!--              设备领用-->
+<!--            </el-button>-->
+<!--            <el-button type="info" icon="el-icon-data-analysis" @click="goToModule('/device/dashboard')">-->
+<!--              查看报表-->
+<!--            </el-button>-->
+<!--          </div>-->
+<!--        </el-card>-->
+<!--      </el-col>-->
 
-      <el-col :xs="24" :sm="24" :md="12" :lg="8">
+      <el-col :xs="24" :sm="24" :md="12" :lg="12">
         <el-card class="info-card">
           <template #header>
             <div class="card-header">

@@ -204,3 +204,4 @@ FROM sys_role_menu rm
 JOIN sys_menu m ON rm.menu_id = m.menu_id
 WHERE rm.menu_id BETWEEN 2000 AND 2005
 ORDER BY rm.role_id, rm.menu_id;
+

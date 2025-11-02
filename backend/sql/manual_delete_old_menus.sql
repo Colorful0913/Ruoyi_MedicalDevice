@@ -26,3 +26,4 @@ SELECT menu_id, menu_name, parent_id, path, component
 FROM sys_menu 
 WHERE menu_name IN ('器械档案', '采购审批管理', '库存与出入库', '报表分析')
 ORDER BY menu_id;
+
